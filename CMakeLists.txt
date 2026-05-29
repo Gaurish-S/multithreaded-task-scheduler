@@ -1,16 +1,22 @@
+# my_project/CMakeLists.txt
 cmake_minimum_required(VERSION 4.3.3)
 project(MultithreadedTaskScheduler VERSION 1.0.0)
 
+# Global compilation configurations
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library(
-	scheduler
-	libs/scheduler/src/scheduler.cpp
+# Order matters: Parse the library first so the executable can see the target!
+add_subdirectory(libs/scheduler)
+
+# Define the demo executable
+add_executable(
+    scheduler_demo 
+    src/main.cpp
 )
 
-target_include_directories(scheduler PUBLIC libs/scheduler/include)
-
-add_executable(scheduler_demo src/main.cpp)
-
-target_link_libraries(scheduler_demo PRIVATE scheduler)
+# Link against the target name directly
+target_link_libraries(
+    scheduler_demo 
+    PRIVATE scheduler
+)
