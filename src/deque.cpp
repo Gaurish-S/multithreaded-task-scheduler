@@ -1,7 +1,5 @@
 #include "deque.hpp"
 
-# adding comment for test
-
 Deque::Deque(size_t initial_capacity) {
     // TODO: Initialize buffer capacity, tracking indices, and bitwise mask properties
 }

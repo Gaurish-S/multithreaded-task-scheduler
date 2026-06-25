@@ -1,22 +1,26 @@
-# my_project/CMakeLists.txt
-cmake_minimum_required(VERSION 4.3.3)
-project(MultithreadedTaskScheduler VERSION 1.0.0)
+cmake_minimum_required(VERSION 3.25)
+project(WorkStealingScheduler VERSION 1.0.0)
 
-# Global compilation configurations
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Order matters: Parse the library first so the executable can see the target!
-add_subdirectory(libs/scheduler)
-
-# Define the demo executable
-add_executable(
-    scheduler_demo 
-    src/main.cpp
+add_library(scheduler_core STATIC
+    src/deque.cpp
+    src/worker.cpp
+    src/scheduler.cpp
 )
 
-# Link against the target name directly
-target_link_libraries(
-    scheduler_demo 
-    PRIVATE scheduler
+target_include_directories(scheduler_core 
+    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+
+# -Werror
+target_compile_options(scheduler_core PRIVATE -Wall -Wextra -Wpedantic)
+
+find_package(Threads REQUIRED)
+target_link_libraries(scheduler_core PUBLIC Threads::Threads)
+
+add_executable(fibonacci_test 
+    tests/fibonacci_test.cpp
+)
+
+target_link_libraries(fibonacci_test PRIVATE scheduler_core)
